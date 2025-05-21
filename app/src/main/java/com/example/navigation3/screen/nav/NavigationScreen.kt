@@ -87,8 +87,13 @@ fun NavigationScreen(modifier: Modifier = Modifier) {
     }
 }
 
-fun <T> MutableList<T>.removeLastOrKeepIfSingle() {
-    if (size == 1) return
+fun <T> MutableList<T>.removeLastOrKeepIfSingle(
+    onSingle: (() -> Unit)? = null,
+) {
+    if (size == 1) {
+        onSingle?.invoke()
+        return
+    }
     removeAt(size - 1)
 }
 
