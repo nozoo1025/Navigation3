@@ -10,11 +10,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.navigation3.screen.nav.NavigationScreen
 import com.example.navigation3.ui.theme.Navigation3Theme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
+
         setContent {
             Navigation3Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
