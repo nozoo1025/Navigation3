@@ -1,5 +1,9 @@
 package com.example.navigation3.screen.nav
 
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -50,19 +54,13 @@ fun NavigationScreen(modifier: Modifier = Modifier) {
             backStack = backStack,
             onBack = { backStack.removeLastOrKeepIfSingle() },
             transitionSpec = {
-                // Slide in from right when navigating forward
-                slideInHorizontally(initialOffsetX = { it }) togetherWith
-                        slideOutHorizontally(targetOffsetX = { -it })
+                sharedAxisX(true)
             },
             popTransitionSpec = {
-                // Slide in from left when navigating back
-                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                        slideOutHorizontally(targetOffsetX = { it })
+                sharedAxisX(false)
             },
             predictivePopTransitionSpec = {
-                // Slide in from left when navigating back
-                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                        slideOutHorizontally(targetOffsetX = { it })
+                sharedAxisX(false)
             },
             entryDecorators = listOf(
                 // Add the default decorators for managing scenes and saving state
@@ -103,6 +101,29 @@ fun NavigationScreen(modifier: Modifier = Modifier) {
             modalScreenController.sheet?.invoke()
         }
     }
+}
+
+private fun sharedAxisX(
+    forward: Boolean,
+): ContentTransform = if (forward) {
+    slideInHorizontally(
+        initialOffsetX = { it },
+        animationSpec = tween(300)
+    ) + fadeIn() togetherWith
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(300)
+            ) + fadeOut()
+} else {
+    // popBackStack 時は逆方向
+    slideInHorizontally(
+        initialOffsetX = { -it },
+        animationSpec = tween(300)
+    ) + fadeIn() togetherWith
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(300)
+            ) + fadeOut()
 }
 
 fun <T> MutableList<T>.removeLastOrKeepIfSingle(

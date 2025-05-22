@@ -11,8 +11,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,6 +26,9 @@ fun BottomSheetLayout(
     navigationIcon: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
+    val topAppBarState = rememberTopAppBarState()
+    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(state = topAppBarState)
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -38,9 +44,12 @@ fun BottomSheetLayout(
                         )
                     }
                 },
+                scrollBehavior = topAppBarScrollBehavior,
             )
         },
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+            .fillMaxSize(),
     ) { innerPadding ->
         Box(
             modifier = Modifier.padding(innerPadding),

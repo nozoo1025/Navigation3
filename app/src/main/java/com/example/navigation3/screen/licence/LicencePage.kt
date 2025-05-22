@@ -1,7 +1,10 @@
 package com.example.navigation3.screen.licence
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
@@ -49,6 +52,21 @@ fun LicenceBottomScreen(
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrKeepIfSingle(onSingle = onDismissRequest) },
+            transitionSpec = {
+                // Slide in from right when navigating forward
+                slideInHorizontally(initialOffsetX = { it }) togetherWith
+                        slideOutHorizontally(targetOffsetX = { -it })
+            },
+            popTransitionSpec = {
+                // Slide in from left when navigating back
+                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                        slideOutHorizontally(targetOffsetX = { it })
+            },
+            predictivePopTransitionSpec = {
+                // Slide in from left when navigating back
+                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                        slideOutHorizontally(targetOffsetX = { it })
+            },
             entryProvider = entryProvider {
                 entry<LicenceRoute.Root> {
                     LicenceRoute(
@@ -71,18 +89,20 @@ fun LicenceRoute(
     onNavigateToDetails: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
-        ListItem(
-            headlineContent = { Text("Koin(2.0.0)") },
-            supportingContent = { Text("Arnaud Giuliani") },
-            trailingContent = {
-                Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = null,
-                )
-            },
-            modifier = Modifier.clickable { onNavigateToDetails() },
-        )
+    LazyColumn(modifier = modifier) {
+        items(100) {
+            ListItem(
+                headlineContent = { Text("Koin(2.0.0)") },
+                supportingContent = { Text("Arnaud Giuliani") },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable { onNavigateToDetails() },
+            )
+        }
     }
 }
 
